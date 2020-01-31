@@ -9,6 +9,8 @@ DFRobotDFPlayerMini myDFPlayer;
 
 #define SENSOR_UMIDADE A5
 #define ESTADO_TOCANDO 513
+#define LED_VERDE 3
+#define LED_VERMELHO 4
 
 void setup() {
   
@@ -26,15 +28,29 @@ void setup() {
   myDFPlayer.volume(15); //Volume 15
   myDFPlayer.EQ(0); //Equalizacao normal
   myDFPlayer.enableLoopAll();
+
+  pinMode(LED_VERDE, OUTPUT);
+  pinMode(LED_VERMELHO, OUTPUT);
 }
 
 bool estaSeco = false;
+bool muitoUmido = false;
 bool tocando;
 void loop() {
   int sensorVal = analogRead(SENSOR_UMIDADE);
   Serial.println(sensorVal);
   estaSeco = (sensorVal >= 800);
-  Serial.print("estaSeco: ");
+  muitoUmido = (sensorVal < 550);
+
+  if (muitoUmido){
+    digitalWrite(LED_VERMELHO, HIGH);
+    digitalWrite(LED_VERDE, LOW);
+  } else {
+    digitalWrite(LED_VERMELHO, LOW);
+    digitalWrite(LED_VERDE, HIGH);
+  }
+  
+  Serial.print("estaSeco: "); 
   Serial.println(estaSeco);
 
   Serial.print("estado do tocando: ");
